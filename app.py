@@ -33,9 +33,26 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     """Load the TFLite model"""
-
+    model_path = 'jute_pest_model_fixed.tflite'
+    
+    # Download model if not exists (for Streamlit Cloud)
+    if not os.path.exists(model_path):
+        try:
+            import requests
+            st.info("Downloading model...")
+            url = "https://github.com/Vansh462/Jute-Pest-Classification/raw/main/jute_pest_model_fixed.tflite"
+            response = requests.get(url, stream=True)
+            response.raise_for_status()
+            
+            with open(model_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        except Exception as e:
+            st.error(f"Failed to download model: {str(e)}")
+            return None
+    
     try:
-        interpreter = tf.lite.Interpreter(model_path='jute_pest_model_fixed.tflite')
+        interpreter = tf.lite.Interpreter(model_path=model_path)
         interpreter.allocate_tensors()
         return interpreter
     except Exception as e:
