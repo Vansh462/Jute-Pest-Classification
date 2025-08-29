@@ -33,13 +33,9 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     """Load the TFLite model"""
-    # Debug info
-    st.write(f"Current directory: {os.getcwd()}")
-    st.write(f"Files in directory: {os.listdir('.')}")
-    st.write(f"TFLite file exists: {os.path.exists('jute_pest_model.tflite')}")
-    
+
     try:
-        interpreter = tf.lite.Interpreter(model_path='jute_pest_model.tflite')
+        interpreter = tf.lite.Interpreter(model_path='jute_pest_model_fixed.tflite')
         interpreter.allocate_tensors()
         return interpreter
     except Exception as e:
@@ -48,8 +44,8 @@ def load_model():
 
 def preprocess_image(image):
     """Preprocess image for model prediction"""
-    # Resize to 512x512 as per your training configuration
-    image = image.resize((512, 512))
+    # Resize to 480x480 as per TFLite model requirements
+    image = image.resize((480, 480))
     
     # Convert to array and normalize
     image_array = np.array(image)
@@ -113,7 +109,7 @@ def main():
         st.write("**Model Performance:**")
         st.write("- Test Accuracy: 95.5%")
         st.write("- Model: TFLite (Optimized)")
-        st.write("- Input Size: 512x512 pixels")
+        st.write("- Input Size: 480x480 pixels")
         st.write("- Model Size: ~40MB")
 
     # Handle model loading with proper UI

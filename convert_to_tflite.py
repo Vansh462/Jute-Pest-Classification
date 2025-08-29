@@ -16,20 +16,20 @@ def convert_model_to_tflite():
     print("Converting to TensorFlow Lite...")
     converter = tf.lite.TFLiteConverter.from_saved_model('my_saved_bit_model/')
     
+    # Fix for variable nodes - create concrete function
+    concrete_func = model.signatures['serving_default']
+    converter = tf.lite.TFLiteConverter.from_concrete_functions([concrete_func])
+    
     # Optimize for size and speed
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    
-    # Optional: Use float16 quantization for even smaller size
-    # converter.target_spec.supported_types = [tf.float16]
     
     tflite_model = converter.convert()
     
     # Save the TFLite model
-    with open('jute_pest_model.tflite', 'wb') as f:
+    with open('jute_pest_model_fixed.tflite', 'wb') as f:
         f.write(tflite_model)
     
-    print(f"TensorFlow Lite model saved as 'jute_pest_model.tflite'")
-    print(f"Original model size: ~170MB")
+    print(f"TensorFlow Lite model saved as 'jute_pest_model_fixed.tflite'")
     print(f"TFLite model size: {len(tflite_model) / (1024*1024):.1f}MB")
 
 if __name__ == "__main__":
