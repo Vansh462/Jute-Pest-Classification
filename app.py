@@ -32,14 +32,14 @@ CLASS_NAMES = [
 
 @st.cache_resource
 def load_model():
-    """Load the trained BiT model"""
+    """Load the TFLite model"""
     try:
-        # Try to load the saved model
-        model = tf.saved_model.load('my_saved_bit_model/')
-        return model
+        interpreter = tf.lite.Interpreter(model_path='jute_pest_model.tflite')
+        interpreter.allocate_tensors()
+        return interpreter
     except Exception as e:
-        st.error(f"Error loading saved model: {str(e)}")
-        st.info("The model files appear to be incomplete. Please re-run your training notebook to save the model properly.")
+        st.error(f"Error loading TFLite model: {str(e)}")
+        st.info("Make sure 'jute_pest_model.tflite' exists in the project directory.")
         return None
 
 def preprocess_image(image):
@@ -62,36 +62,32 @@ def preprocess_image(image):
     else:
         return None
 
-def predict_pest(model, image_array):
-    """Make prediction using the loaded model"""
+def predict_pest(interpreter, image_array):
+    """Make prediction using the TFLite interpreter"""
     try:
-        # Get predictions - use the signatures for saved models
-        if hasattr(model, 'signatures'):
-            # Use the serving signature
-            infer = model.signatures['serving_default']
-            # Get the input key (usually the first one)
-            input_key = list(infer.structured_input_signature[1].keys())[0]
-            predictions = infer(**{input_key: tf.constant(image_array)})
-            # Get the output (usually there's one output)
-            output_key = list(predictions.keys())[0]
-            predictions = predictions[output_key]
-        else:
-            # Fallback: try direct call
-            predictions = model(tf.constant(image_array))
-
+        # Get input and output details
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+        
+        # Set input tensor
+        interpreter.set_tensor(input_details[0]['index'], image_array.astype(np.float32))
+        
+        # Run inference
+        interpreter.invoke()
+        
+        # Get output
+        predictions = interpreter.get_tensor(output_details[0]['index'])[0]
+        
         # Apply softmax to get probabilities
-        probabilities = tf.nn.softmax(predictions).numpy()[0]
-
+        probabilities = tf.nn.softmax(predictions).numpy()
+        
         # Get top prediction
         predicted_class_idx = np.argmax(probabilities)
         confidence = float(probabilities[predicted_class_idx])
-
+        
         return predicted_class_idx, confidence, probabilities
     except Exception as e:
         st.error(f"Error during prediction: {str(e)}")
-        st.error(f"Model type: {type(model)}")
-        if hasattr(model, 'signatures'):
-            st.error(f"Available signatures: {list(model.signatures.keys())}")
         return None, None, None
 
 def main():
@@ -102,7 +98,7 @@ def main():
     with st.sidebar:
         st.header("About")
         st.write("""
-        This app uses a BiT (Big Transfer) model to classify 17 different types of jute pests.
+        This app uses an optimized TFLite model to classify 17 different types of jute pests.
 
         **Supported Pest Types:**
         """)
@@ -112,29 +108,25 @@ def main():
         st.markdown("---")
         st.write("**Model Performance:**")
         st.write("- Test Accuracy: 95.5%")
-        st.write("- Model: BiT-M R101x1")
+        st.write("- Model: TFLite (Optimized)")
         st.write("- Input Size: 512x512 pixels")
+        st.write("- Model Size: ~40MB")
 
     # Handle model loading with proper UI
-    with st.spinner("🤖 Loading BiT model... This may take 10-15 seconds on first run."):
+    with st.spinner("🤖 Loading TFLite model... This should be fast!"):
         model = load_model()
 
     if model is not None:
-        st.success("✅ Model loaded successfully! Ready for pest classification.")
+        st.success("✅ TFLite model loaded successfully! Ready for pest classification.")
 
     if model is None:
         st.error("Failed to load the model.")
         st.markdown("""
         ### How to fix this issue:
 
-        1. **Re-run your training notebook** to properly save the model
-        2. Make sure the model is saved using `tf.saved_model.save()` or `model.save()`
-        3. Ensure the `my_saved_bit_model` directory contains all necessary files:
-           - `saved_model.pb`
-           - `variables/` directory with `variables.data-*` and `variables.index` files
-
-        ### Alternative solution:
-        You can also modify the notebook to save the model in a different format or location.
+        1. Make sure `jute_pest_model.tflite` exists in the project directory
+        2. If missing, run the conversion script: `python convert_to_tflite.py`
+        3. Ensure the TFLite file is not corrupted
         """)
         return
     

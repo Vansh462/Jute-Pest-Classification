@@ -274,7 +274,7 @@ Temporary Items
 # ============================================================================
 
 # Large model files (uncomment if models are too large for git)
-# my_saved_bit_model/
+my_saved_bit_model/
 # *.tflite
 # *.onnx
 
