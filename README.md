@@ -1,15 +1,20 @@
 # 🐛 Jute Pest Classification System
 
-An intelligent web application for identifying and classifying 17 different types of jute pests using a state-of-the-art BiT (Big Transfer) deep learning model. This system provides farmers and agricultural experts with an easy-to-use tool for rapid pest identification.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://jute-pest-classifier.streamlit.app/)
+
+An intelligent web application for identifying and classifying 17 different types of jute pests using an optimized TensorFlow Lite deep learning model. This system provides farmers and agricultural experts with an easy-to-use tool for rapid pest identification.
+
+## 🌐 Live Demo
+**Try it now:** [https://jute-pest-classifier.streamlit.app/](https://jute-pest-classifier.streamlit.app/)
 
 ## ✨ Features
 
-- **🎯 High Accuracy**: 95.5% test accuracy with BiT-M R101x1 model
+- **🎯 High Accuracy**: 95.5% test accuracy with optimized TFLite model
 - **⚡ Real-time Classification**: Instant pest identification from uploaded images
 - **📊 Confidence Scoring**: Detailed probability scores for all predictions
 - **🏆 Top-3 Predictions**: Alternative possibilities with confidence levels
 - **📱 User-friendly Interface**: Clean, intuitive web interface
-- **🔄 Smart Caching**: Fast subsequent predictions after initial model load
+- **🚀 Cloud Deployment**: Deployed on Streamlit Community Cloud
 - **📈 Detailed Analytics**: Complete probability breakdown for all 17 pest classes
 
 ## 🚀 Quick Start
@@ -39,8 +44,7 @@ streamlit run app.py
 
 4. **Access the app**:
    - Open your browser and navigate to `http://localhost:8501`
-   - The model will take 10-15 seconds to load initially
-   - Subsequent runs will be much faster due to caching
+   - Or use the live demo: [https://jute-pest-classifier.streamlit.app/](https://jute-pest-classifier.streamlit.app/)
 
 ## 📁 Project Structure
 
@@ -53,7 +57,7 @@ Jute-Pest-Classification/
 │   ├── train/                   # Training images
 │   ├── val/                     # Validation images
 │   └── test/                    # Test images
-├── 🤖 my_saved_bit_model/        # Trained BiT model (~170MB)
+├── 🤖 jute_pest_model_fixed.tflite # Optimized TFLite model (~42MB)
 ├── 📊 logs/                      # Training logs and metrics
 ├── ⚡ convert_to_tflite.py       # Model optimization script
 ├── 🔧 optimize_model.py          # Model compression utility
@@ -89,17 +93,17 @@ The system can accurately identify and classify **17 different jute pest species
 ### Performance Metrics
 - **🎯 Test Accuracy**: 95.5%
 - **⚡ Inference Time**: 1-3 seconds per image
-- **🧠 Model Architecture**: BiT-M R101x1 (Big Transfer)
-- **📐 Input Resolution**: 512×512 pixels
-- **💾 Model Size**: ~170MB
-- **🔄 Loading Time**: 10-15 seconds (first run), instant (cached)
+- **🧠 Model Architecture**: TensorFlow Lite (Optimized)
+- **📐 Input Resolution**: 480×480 pixels
+- **💾 Model Size**: ~42MB
+- **🔄 Loading Time**: Instant loading
 
 ### Technical Details
-- **Framework**: TensorFlow 2.13+
-- **Pre-training**: ImageNet-21k
+- **Framework**: TensorFlow Lite
+- **Pre-training**: ImageNet-21k (original BiT model)
 - **Fine-tuning**: Custom jute pest dataset
-- **Optimization**: Mixed precision training
-- **Data Augmentation**: Advanced augmentation pipeline
+- **Optimization**: TFLite conversion with quantization
+- **Deployment**: Streamlit Community Cloud
 
 ## 🎯 How to Use
 
@@ -110,9 +114,9 @@ The system can accurately identify and classify **17 different jute pest species
    streamlit run app.py
    ```
 
-2. **⏳ Wait for Model Loading**
-   - First run: 10-15 seconds (model loads from disk)
-   - Subsequent runs: Instant (cached in memory)
+2. **⚡ Instant Loading**
+   - Model loads instantly from optimized TFLite format
+   - No waiting time required
 
 3. **📤 Upload an Image**
    - Click "Browse files" or drag & drop
@@ -168,31 +172,19 @@ For faster loading times, you can create optimized model versions:
 | **Memory errors** | Ensure 4GB+ RAM available |
 | **Import errors** | Run `pip install -r requirements.txt` |
 
-### Model File Structure
-Your `my_saved_bit_model/` should contain:
+### Model File
+The optimized model file:
 ```
-my_saved_bit_model/
-├── saved_model.pb          # Model architecture
-├── fingerprint.pb          # Model fingerprint
-└── variables/              # Model weights
-    ├── variables.index
-    └── variables.data-00000-of-00001
+jute_pest_model_fixed.tflite    # 42MB TensorFlow Lite model
 ```
 
-### Re-training the Model
+### Model Conversion
 
-If you need to retrain or modify the model:
+The TFLite model was converted from the original BiT model for optimal deployment:
 
-1. **Open the training notebook**:
-   ```bash
-   jupyter notebook JP.ipynb
-   ```
-
-2. **Save model after training**:
-   ```python
-   # In your notebook after training
-   tf.saved_model.save(model, 'my_saved_bit_model')
-   ```
+1. **Original training**: See `JP.ipynb` notebook
+2. **Model conversion**: Converted to TensorFlow Lite format
+3. **Optimization**: Quantized for smaller size and faster inference
 
 ### API Integration
 
@@ -219,7 +211,7 @@ pred_idx, confidence, probabilities = predict_pest(model, image_array)
 
 ## 🔬 Research & Citations
 
-This project uses the BiT (Big Transfer) model architecture:
+This project is based on the BiT (Big Transfer) model architecture, optimized for deployment:
 
 ```bibtex
 @article{kolesnikov2020big,
@@ -229,6 +221,13 @@ This project uses the BiT (Big Transfer) model architecture:
   year={2020}
 }
 ```
+
+## 🚀 Deployment
+
+This application is deployed on **Streamlit Community Cloud**:
+- **Live URL**: [https://jute-pest-classifier.streamlit.app/](https://jute-pest-classifier.streamlit.app/)
+- **Auto-deployment**: Connected to GitHub for continuous deployment
+- **Model Loading**: Automatic download and caching of TFLite model
 
 ## 🤝 Contributing
 
