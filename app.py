@@ -39,7 +39,7 @@ def load_model():
     if not os.path.exists(model_path):
         try:
             import requests
-            st.info("Downloading model...")
+            pass  # Download silently
             url = "https://github.com/Vansh462/Jute-Pest-Classification/raw/main/jute_pest_model_fixed.tflite"
             response = requests.get(url, stream=True)
             response.raise_for_status()
@@ -133,8 +133,7 @@ def main():
     with st.spinner("🤖 Loading TFLite model... This should be fast!"):
         model = load_model()
 
-    if model is not None:
-        st.success("✅ TFLite model loaded successfully! Ready for pest classification.")
+    # Model loaded silently
 
     if model is None:
         st.error("Failed to load the model.")
