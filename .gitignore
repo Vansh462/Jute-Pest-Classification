@@ -278,6 +278,10 @@ my_saved_bit_model/
 # *.tflite
 # *.onnx
 
+# Development scripts (keep local only)
+optimize_model.py
+convert_to_tflite.py
+
 # Temporary files
 temp/
 tmp/
