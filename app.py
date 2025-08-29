@@ -33,6 +33,11 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     """Load the TFLite model"""
+    # Debug info
+    st.write(f"Current directory: {os.getcwd()}")
+    st.write(f"Files in directory: {os.listdir('.')}")
+    st.write(f"TFLite file exists: {os.path.exists('jute_pest_model.tflite')}")
+    
     try:
         interpreter = tf.lite.Interpreter(model_path='jute_pest_model.tflite')
         interpreter.allocate_tensors()
