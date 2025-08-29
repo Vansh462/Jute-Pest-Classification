@@ -39,7 +39,6 @@ def load_model():
         return interpreter
     except Exception as e:
         st.error(f"Error loading TFLite model: {str(e)}")
-        st.info("Make sure 'jute_pest_model.tflite' exists in the project directory.")
         return None
 
 def preprocess_image(image):
