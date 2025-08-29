@@ -57,10 +57,8 @@ Jute-Pest-Classification/
 │   ├── train/                   # Training images
 │   ├── val/                     # Validation images
 │   └── test/                    # Test images
-├── 🤖 jute_pest_model_fixed.tflite # Optimized TFLite model (~42MB)
+├── 🤖 jute_pest_model.tflite     # Optimized TFLite model (~42MB)
 ├── 📊 logs/                      # Training logs and metrics
-├── ⚡ convert_to_tflite.py       # Model optimization script
-├── 🔧 optimize_model.py          # Model compression utility
 └── 📖 README.md                  # This documentation
 ```
 
@@ -175,7 +173,7 @@ For faster loading times, you can create optimized model versions:
 ### Model File
 The optimized model file:
 ```
-jute_pest_model_fixed.tflite    # 42MB TensorFlow Lite model
+jute_pest_model.tflite    # 42MB TensorFlow Lite model
 ```
 
 ### Model Conversion
