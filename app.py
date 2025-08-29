@@ -33,14 +33,14 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     """Load the TFLite model"""
-    model_path = 'jute_pest_model_fixed.tflite'
+    model_path = 'jute_pest_model.tflite'
     
     # Download model if not exists (for Streamlit Cloud)
     if not os.path.exists(model_path):
         try:
             import requests
             pass  # Download silently
-            url = "https://github.com/Vansh462/Jute-Pest-Classification/raw/main/jute_pest_model_fixed.tflite"
+            url = "https://github.com/Vansh462/Jute-Pest-Classification/raw/main/jute_pest_model.tflite"
             response = requests.get(url, stream=True)
             response.raise_for_status()
             
@@ -110,6 +110,7 @@ def predict_pest(interpreter, image_array):
 def main():
     st.title("🐛 Jute Pest Classifier")
     st.markdown("### Upload an image to identify jute pests")
+    st.markdown("[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/Vansh462/Jute-Pest-Classification)")
 
     # Sidebar with information
     with st.sidebar:
